@@ -1,6 +1,7 @@
 {
   "name": "react-hw-02-typescript",
   "private": true,
+  "homepage": "https://RomarioNik.github.io/react-hw-02-typescript/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
