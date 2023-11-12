@@ -18,7 +18,6 @@ const rewievs: IState = {
 export const App = () => {
   const [state, setState] = useState<IState>(rewievs);
   const { good, neutral, bad } = state;
-  console.log(state);
 
   const addFeedback = (nameButton: keyof IState): void => {
     setState(
@@ -31,7 +30,6 @@ export const App = () => {
   };
 
   const countTotalFeedback = (): number => {
-    console.log(Object.values(state));
     return Object.values(state).reduce((total, el) => {
       return (total = total + el);
     }, 0);
