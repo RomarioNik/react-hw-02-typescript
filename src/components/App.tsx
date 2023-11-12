@@ -1,35 +1,75 @@
 import { useState } from "react";
-import reactLogo from "../assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+// components
+import { FeedbackOptions } from "./FeedbackOptions";
+import { Section } from "./Section";
+import { Statistics } from "./Statistics";
+import { Notification } from "./Notification";
+// styles
+import { Container } from "./App.style";
+// types
+import { IState } from "./App.tyles";
 
-function App() {
-  const [count, setCount] = useState(0);
+const rewievs: IState = {
+  good: 0,
+  neutral: 0,
+  bad: 0,
+};
+
+export const App = () => {
+  const [state, setState] = useState<IState>(rewievs);
+  const { good, neutral, bad } = state;
+  console.log(state);
+
+  const addFeedback = (nameButton: keyof IState): void => {
+    setState(
+      (prevState) =>
+        ({
+          ...prevState,
+          [nameButton]: prevState[nameButton] + 1,
+        } as unknown as IState)
+    );
+  };
+
+  const countTotalFeedback = (): number => {
+    console.log(Object.values(state));
+    return Object.values(state).reduce((total, el) => {
+      return (total = total + el);
+    }, 0);
+  };
+
+  const countPositiveFeedbackPercentage = (): number => {
+    const totalFeedbacks = countTotalFeedback();
+
+    if (totalFeedbacks === 0) {
+      return 0;
+    }
+
+    const percentageCount = (good * 100) / totalFeedbacks;
+    return Number(percentageCount.toFixed());
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
-}
+    <Container>
+      <Section title="Please, leave feedback">
+        <FeedbackOptions
+          options={Object.keys(state)}
+          onLeaveFeedback={addFeedback}
+        />
+      </Section>
 
-export default App;
+      <Section title="Statistics">
+        {countTotalFeedback() ? (
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={countTotalFeedback()}
+            positivePercentage={countPositiveFeedbackPercentage()}
+          ></Statistics>
+        ) : (
+          <Notification message="There is no feedback" />
+        )}
+      </Section>
+    </Container>
+  );
+};
